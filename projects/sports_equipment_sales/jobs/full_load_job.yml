@@ -1,0 +1,24 @@
+resources:
+  jobs:
+    sports_equipment_sales_full_load:
+      name: sports_equipment_sales_full_load
+      tasks:
+        - task_key: full_load
+          notebook_task:
+            notebook_path: /Workspace/End_to_end_project/Sports_Equipment_Sales/full_load
+            source: WORKSPACE
+        - task_key: gold_full_load
+          depends_on:
+            - task_key: full_load
+          notebook_task:
+            notebook_path: /Workspace/End_to_end_project/Sports_Equipment_Sales/gold_full_load
+            source: WORKSPACE
+        - task_key: gold_kpi
+          depends_on:
+            - task_key: gold_full_load
+          notebook_task:
+            notebook_path: /Workspace/End_to_end_project/Sports_Equipment_Sales/gold_kpi
+            source: WORKSPACE
+      queue:
+        enabled: true
+      performance_target: PERFORMANCE_OPTIMIZED
