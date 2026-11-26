@@ -1,0 +1,32 @@
+resources:
+  jobs:
+    sports_equipment_sales_incremental:
+      name: sports_equipment_sales_incremental
+      tasks:
+        - task_key: incremental_merge
+          notebook_task:
+            notebook_path: /Workspace/End_to_end_project/Sports_Equipment_Sales/incremental_merge
+            base_parameters:
+              incremental_load: sports_equipment_sales_batch_03.csv
+            source: WORKSPACE
+        - task_key: gold_incremental_merge
+          depends_on:
+            - task_key: incremental_merge
+          notebook_task:
+            notebook_path: /Workspace/End_to_end_project/Sports_Equipment_Sales/gold_incremental_merge
+            source: WORKSPACE
+        - task_key: gold_kpi
+          depends_on:
+            - task_key: gold_incremental_merge
+          notebook_task:
+            notebook_path: /Workspace/End_to_end_project/Sports_Equipment_Sales/gold_kpi
+            source: WORKSPACE
+        - task_key: watermark_commit
+          depends_on:
+            - task_key: gold_kpi
+          notebook_task:
+            notebook_path: /Workspace/End_to_end_project/Sports_Equipment_Sales/watermark_commit
+            source: WORKSPACE
+      queue:
+        enabled: true
+      performance_target: PERFORMANCE_OPTIMIZED
